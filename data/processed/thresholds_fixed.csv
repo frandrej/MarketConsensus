@@ -1,0 +1,4 @@
+class,threshold
+decrease,0.20000000000000004
+stay_same,0.20000000000000004
+increase,0.1

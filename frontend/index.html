@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Consensus - Stock Analysis</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+    
+    <!-- Plotly for 3D visualization -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    
+    <!-- Chart.js for 2D charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="logo">
+                    <span class="logo-icon">📊</span>
+                    Market Consensus
+                </h1>
+                <p class="tagline">Advanced Stock Risk Analysis</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            
+            <!-- Search Section -->
+            <section class="search-section">
+                <div class="search-card">
+                    <h2 class="search-title">Enter Stock Ticker</h2>
+                    <p class="search-subtitle">Analyze risk-neutral probability density and more</p>
+                    
+                    <form id="tickerForm" class="search-form">
+                        <div class="input-group">
+                            <input 
+                                type="text" 
+                                id="tickerInput" 
+                                class="ticker-input" 
+                                placeholder="e.g., AAPL, NVDA, MSFT"
+                                autocomplete="off"
+                                required
+                            >
+                            <button type="submit" class="btn btn-primary" id="analyzeBtn">
+                                <span class="btn-text">Analyze</span>
+                                <span class="btn-loader" style="display: none;">
+                                    <span class="spinner"></span>
+                                </span>
+                            </button>
+                        </div>
+                        <p class="input-hint">Enter a valid stock ticker symbol</p>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Results Section (initially hidden) -->
+            <section id="resultsSection" class="results-section" style="display: none;">
+                
+                <!-- Current Ticker Display -->
+                <div class="current-ticker">
+                    <span class="ticker-label">Analyzing:</span>
+                    <span id="currentTicker" class="ticker-value">AAPL</span>
+                    <button id="resetBtn" class="btn-reset" title="New Search">
+                        <span>✕</span>
+                    </button>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="action-btn active" data-view="density">
+                        <span class="action-icon">📈</span>
+                        <span class="action-text">
+                            <span class="action-title">
+                                Risk-Neutral PDF
+                                <span class="help-icon" title="Shows the market's probability distribution for future stock prices. Higher peaks indicate prices the market expects. Use this to see if the market expects the stock to move up, down, or stay flat - helping you decide entry/exit points.">?</span>
+                            </span>
+                            <span class="action-desc">3D Probability Density</span>
+                        </span>
+                    </button>
+                    
+                    <button class="action-btn" data-view="similar">
+                        <span class="action-icon">🔍</span>
+                        <span class="action-text">
+                            <span class="action-title">
+                                Similar Stocks
+                                <span class="help-icon" title="Finds companies with similar risk profiles based on their probability distributions. Use this to discover alternative investment opportunities or to compare if this stock is priced fairly relative to peers.">?</span>
+                            </span>
+                            <span class="action-desc">Find Comparable Companies</span>
+                        </span>
+                    </button>
+                    
+                    <button class="action-btn" data-view="sensitivity">
+                        <span class="action-icon">📊</span>
+                        <span class="action-text">
+                            <span class="action-title">
+                                Macro Sensitivity
+                                <span class="help-icon" title="Reveals how macroeconomic factors (VIX, interest rates, inflation, GDP) affect this stock's returns. Use this to understand when to buy (favorable macro conditions) or sell (unfavorable conditions) based on economic trends.">?</span>
+                            </span>
+                            <span class="action-desc">Economic Factor Analysis</span>
+                        </span>
+                    </button>
+                    
+                    <button class="action-btn" data-view="volatility">
+                        <span class="action-icon">⚡</span>
+                        <span class="action-text">
+                            <span class="action-title">
+                                Volatility Forecast
+                                <span class="help-icon" title="Machine learning prediction of whether volatility will increase, decrease, or stay the same. Rising volatility = higher risk/opportunity. Use this to time option trades or adjust position sizing based on expected price swings.">?</span>
+                            </span>
+                            <span class="action-desc">ML-Based Prediction</span>
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Main Display Area -->
+                <div class="display-area">
+                    
+                    <!-- Density View (3D PDF) -->
+                    <div id="densityView" class="view-panel active">
+                        <div class="panel-header">
+                            <h3 class="panel-title">Risk-Neutral Probability Density</h3>
+                            <p class="panel-subtitle">3D visualization of implied probability distribution</p>
+                        </div>
+                        <div class="panel-content">
+                            <!-- Loading State -->
+                            <div id="densityLoading" class="loading-state">
+                                <div class="spinner-large"></div>
+                                <p class="loading-text">Computing density...</p>
+                                <p class="loading-subtext">This may take 30-90 seconds</p>
+                            </div>
+                            
+                            <!-- Chart Container -->
+                            <div id="densityChart" class="chart-container" style="display: none;"></div>
+                            
+                            <!-- Error State -->
+                            <div id="densityError" class="error-state" style="display: none;">
+                                <div class="error-icon">⚠️</div>
+                                <p class="error-text">Failed to load density data</p>
+                                <p class="error-subtext" id="densityErrorMsg"></p>
+                                <button class="btn btn-secondary" onclick="retryDensity()">Retry</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Similar Stocks View -->
+                    <div id="similarView" class="view-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">Similar Stocks</h3>
+                            <p class="panel-subtitle">Companies with comparable risk profiles</p>
+                        </div>
+                        <div class="panel-content">
+                            <!-- Loading State -->
+                            <div id="similarLoading" class="loading-state">
+                                <div class="spinner-large"></div>
+                                <p class="loading-text">Finding similar stocks...</p>
+                                <p class="loading-subtext">This may take 1-3 minutes</p>
+                            </div>
+                            
+                            <!-- Results Container -->
+                            <div id="similarResults" class="similar-results" style="display: none;">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                            
+                            <!-- Error State -->
+                            <div id="similarError" class="error-state" style="display: none;">
+                                <div class="error-icon">⚠️</div>
+                                <p class="error-text">Failed to find similar stocks</p>
+                                <p class="error-subtext" id="similarErrorMsg"></p>
+                                <button class="btn btn-secondary" onclick="retrySimilar()">Retry</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Macro Sensitivity View -->
+                    <div id="sensitivityView" class="view-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">Macro Sensitivity Analysis</h3>
+                            <p class="panel-subtitle">How macroeconomic factors affect this stock</p>
+                        </div>
+                        <div class="panel-content">
+                            <!-- Loading State -->
+                            <div id="sensitivityLoading" class="loading-state">
+                                <div class="spinner-large"></div>
+                                <p class="loading-text">Analyzing macro factors...</p>
+                                <p class="loading-subtext">This may take 1-2 minutes</p>
+                            </div>
+                            
+                            <!-- Results Container -->
+                            <div id="sensitivityResults" class="sensitivity-results" style="display: none;">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                            
+                            <!-- Error State -->
+                            <div id="sensitivityError" class="error-state" style="display: none;">
+                                <div class="error-icon">⚠️</div>
+                                <p class="error-text">Failed to analyze sensitivity</p>
+                                <p class="error-subtext" id="sensitivityErrorMsg"></p>
+                                <button class="btn btn-secondary" onclick="retrySensitivity()">Retry</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Volatility Prediction View -->
+                    <div id="volatilityView" class="view-panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">Volatility Forecast</h3>
+                            <p class="panel-subtitle">Machine learning prediction of volatility changes</p>
+                        </div>
+                        <div class="panel-content">
+                            <!-- Loading State -->
+                            <div id="volatilityLoading" class="loading-state">
+                                <div class="spinner-large"></div>
+                                <p class="loading-text">Predicting volatility...</p>
+                                <p class="loading-subtext">This takes 3-5 seconds</p>
+                            </div>
+                            
+                            <!-- Results Container -->
+                            <div id="volatilityResults" class="volatility-results" style="display: none;">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                            
+                            <!-- Error State -->
+                            <div id="volatilityError" class="error-state" style="display: none;">
+                                <div class="error-icon">⚠️</div>
+                                <p class="error-text">Failed to predict volatility</p>
+                                <p class="error-subtext" id="volatilityErrorMsg"></p>
+                                <button class="btn btn-secondary" onclick="retryVolatility()">Retry</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer-text">
+                Market Consensus © 2024 | 
+                <a href="#" class="footer-link">Documentation</a> | 
+                <a href="#" class="footer-link">API</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification (for errors/success messages) -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <span class="toast-icon" id="toastIcon"></span>
+            <span class="toast-message" id="toastMessage"></span>
+        </div>
+        <button class="toast-close" onclick="hideToast()">✕</button>
+    </div>
+
+    <!-- JavaScript Files (will be created in later phases) -->
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

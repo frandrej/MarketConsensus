@@ -1,0 +1,45 @@
+FIXED MODEL - NO DATA LEAKAGE
+================================================================================
+
+Standard Accuracy: 0.4783
+Threshold Accuracy: 0.6522
+Weighted F1: 0.6897
+
+              precision    recall  f1-score   support
+
+    Decrease       0.87      0.68      0.76        57
+   Stay Same       0.25      0.50      0.33        12
+    Increase       0.00      0.00      0.00         0
+
+    accuracy                           0.65        69
+   macro avg       0.37      0.39      0.37        69
+weighted avg       0.76      0.65      0.69        69
+
+
+Confusion Matrix:
+[[39 18  0]
+ [ 6  6  0]
+ [ 0  0  0]]
+
+Top 20 Features:
+                        feature  importance
+                      vix_close  465.853322
+                      spy_close  370.775282
+          atm_iv_mean_change_5d  258.403761
+                 intraday_range  242.725406
+              avg_option_volume  239.582588
+                    atm_iv_long  178.158214
+                       iv_range  142.899230
+                    atm_iv_mean  136.566038
+             total_transactions  134.382311
+                   atm_iv_short  124.074864
+                       iv_smile  123.408564
+                      return_1d  115.219356
+                   iv_skew_call  109.193146
+            total_option_volume  108.116900
+                  atm_iv_medium  104.945423
+put_call_volume_ratio_change_5d   98.815861
+                 macd_histogram   96.684433
+                 volume_pct_atm   88.426038
+          put_call_volume_ratio   83.521156
+                     atm_iv_std   82.403642
