@@ -5,7 +5,7 @@
 
 // API Configuration
 const API_CONFIG = {
-    BASE_URL: 'http://localhost:8000/api',
+    BASE_URL: 'https://api.impliedmarkets.com/api',
     TIMEOUT: 180000, // 3 minutes (for slow endpoints)
     RETRY_ATTEMPTS: 1
 };
