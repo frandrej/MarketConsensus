@@ -73,10 +73,13 @@ function handleApiError(error, endpoint) {
 
 export async function checkHealth() {
     try {
+        // Health endpoint is at root, not under /api
+        const healthUrl = 'https://api.impliedmarkets.com/health';
+        
         const response = await fetchWithTimeout(
-            `${API_CONFIG.BASE_URL.replace('/api', '')}/health`,
+            healthUrl,
             {},
-            5000 // 5 second timeout for health check
+            5000
         );
         
         if (!response.ok) {
