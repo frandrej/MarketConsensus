@@ -5,16 +5,6 @@ Macro Sensitivity Analysis Tool - API Version
 Analyzes how sensitive a stock is to macroeconomic factors using multiple 
 regression analysis and retrieves relevant news about key macro drivers.
 
-Changes from original:
-- Removed hardcoded API keys
-- Made verbose output optional
-- API keys passed as parameters or from environment
-- Returns JSON-serializable data
-- Made lookback_years adjustable (default: 3)
-- Better error handling
-
-Requirements:
-- pip install fredapi yfinance statsmodels newsapi-python pandas numpy scipy python-dotenv
 """
 
 import numpy as np
