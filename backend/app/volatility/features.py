@@ -10,7 +10,7 @@ warnings.filterwarnings('ignore')
 # ============================================================================
 
 # Paths to processed data from Part 1
-DATA_DIR = r"C:\Users\diefr\OneDrive\Lernsachen\MarketConsensus\data\processed"
+DATA_DIR = ""
 STOCK_DATA_PATH = f"{DATA_DIR}\\stock_data_with_target.csv"
 OPTIONS_DATA_PATH = f"{DATA_DIR}\\options_data_with_iv.csv"
 RISK_FREE_RATE_PATH = f"{DATA_DIR}\\risk_free_rate.csv"
