@@ -1,10 +1,10 @@
 """
-Breeden-Litzenberger Risk-Neutral Density Analyzer (Merged)
+Breeden-Litzenberger Risk-Neutral Density Analyzer
 ==========================================================
 - Uses Polygon snapshot options chain.
 - Robustly extracts prices from last_quote bid/ask with fallbacks.
 - Combines calls/puts using put-call parity (liquidity/open-interest weighting).
-- Cleans data using the older "works well" methodology:
+- Cleans data using the methodology:
   open interest filter + moneyness filter + gentle monotonicity enforcement.
 - Computes risk-neutral density via Breeden-Litzenberger.
 - Returns JSON-serializable data for API use (plus optional Plotly visualization).
@@ -374,7 +374,7 @@ class BreedenlitzenbergerAnalyzer:
         moneyness_range: Tuple[float, float] = (0.85, 1.15),
     ) -> pd.DataFrame:
         """
-        Old working approach:
+        Approach:
           1) Keep positive prices and OI >= threshold
           2) Filter by moneyness K/S
           3) Enforce gentle monotonicity: keep a subsequence of strictly decreasing call prices
