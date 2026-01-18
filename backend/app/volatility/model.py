@@ -18,7 +18,7 @@ warnings.filterwarnings('ignore')
 # CONFIGURATION
 # ============================================================================
 
-DATA_DIR = r"C:\Users\diefr\OneDrive\Lernsachen\MarketConsensus\data\processed"
+DATA_DIR = ""
 FEATURES_PATH = f"{DATA_DIR}\\features_dataset.csv"
 MODEL_OUTPUT_DIR = DATA_DIR
 RESULTS_OUTPUT_PATH = f"{MODEL_OUTPUT_DIR}\\model_results_fixed.txt"
