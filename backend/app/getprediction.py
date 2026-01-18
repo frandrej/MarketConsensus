@@ -1,5 +1,5 @@
 """
-VOLATILITY PREDICTION - API VERSION (COMPLETE)
+VOLATILITY PREDICTION 
 ===============================================
 
 Complete end-to-end volatility prediction system with all 76 features.
@@ -739,7 +739,6 @@ def find_model_directory() -> Optional[str]:
             return env_model_dir
     
     possible_paths = [
-        r"C:\Users\diefr\OneDrive\Lernsachen\MarketConsensus\data\processed",
         "./models",
         "./data/processed",
         "../data/processed",
