@@ -37,10 +37,10 @@ START_DATE = datetime(2025, 12, 1)
 END_DATE = datetime(2025, 12, 31)
 
 # FRED API key (you'll need to get your own from https://fred.stlouisfed.org/docs/api/api_key.html)
-FRED_API_KEY = '4a80f3bf51df1985e6569f15a90c890e'  # Replace with your actual key
+FRED_API_KEY = ''  # Replace with your actual key
 
 # Path to local options data
-OPTIONS_DATA_PATH = r"C:\Users\diefr\OneDrive\Lernsachen\MarketConsensus\optiondata"
+OPTIONS_DATA_PATH = ""
 
 # Directories for data storage
 DATA_DIR = './data'
